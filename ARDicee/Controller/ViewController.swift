@@ -22,20 +22,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Create a new scene
 //        let scene = SCNScene(named: "art.scnassets/ship.scn")!
         
+        sceneView.showsStatistics = true
+        
         // Set the scene to the view
 //        sceneView.scene = scene
         
-        let cube = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0.01)
+        let sphare = SCNSphere(radius: 0.2)
         
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor.red
+        material.diffuse.contents = UIImage(named: "art.scnassets/moon_texture.jpeg")
         
-        cube.materials = [material]
+        sphare.materials = [material]
         
         let node = SCNNode()
-        node.position = SCNVector3(0, 0.1, -0.5)
+        node.position = SCNVector3(0, 0.3, -0.7)
         
-        node.geometry = cube
+        node.geometry = sphare
         
         sceneView.scene.rootNode.addChildNode(node)
         
