@@ -53,6 +53,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         guard let planAnchor = anchor as? ARPlaneAnchor else {return}
         
+        //TODO: Fix: Createing mutiple plans everywhere in frame
         let planNode = createPlan(withPlanAnchor: planAnchor)
         
         node.addChildNode(planNode)
@@ -77,6 +78,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         planNode.position = SCNVector3(planAnchor.center.x, 0, planAnchor.center.z)
         planNode.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
         
+        //TODO: check if correct?
         let plan = SCNPlane(width: CGFloat(planAnchor.planeExtent.width), height: CGFloat(planAnchor.planeExtent.height))
         
         let gridMaterial = SCNMaterial()
