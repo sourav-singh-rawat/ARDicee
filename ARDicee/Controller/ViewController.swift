@@ -51,7 +51,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             planNode.position = SCNVector3(planAnchor.center.x, 0, planAnchor.center.z)
             planNode.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
             
-            let plan = SCNPlane(width: CGFloat(planAnchor.extent.x), height: CGFloat(planAnchor.extent.z))
+            let plan = SCNPlane(width: CGFloat(planAnchor.planeExtent.width), height: CGFloat(planAnchor.planeExtent.height))
             
             let gridMaterial = SCNMaterial()
             gridMaterial.diffuse.contents = UIImage(named: "art.scnassets/grid.png")
@@ -59,7 +59,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             plan.materials = [gridMaterial]
             
             planNode.geometry = plan
-            
+        
             node.addChildNode(planNode)
             
 //            let diceScene = SCNScene(named: "art.scnassets/dice.scn")!
@@ -81,13 +81,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touche = touches.first {
             let touchLocation  = touche.location(in: sceneView)
+
+            let result = sceneView.raycastQuery(from: touchLocation, allowing: .existingPlaneInfinite, alignment: .horizontal)
             
-            let result = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
-            
-            if !result.isEmpty {
-                print("Touched inside")
-            }else {
-                print("Touched outside")
+            if let hitLoc = result {
+                let diceScene = SCNScene(named: "art.scnassets/dice.scn")
+                
+                if let diceNode = diceScene?.rootNode.childNode(withName: "Dice", recursively: true) {
+                    diceNode.position = SCNVector3(hitLoc.direction.x,hitLoc.direction.y,hitLoc.direction.z)
+                    
+                    sceneView.scene.rootNode.addChildNode(diceNode)
+                }
+                
             }
         }
     }
