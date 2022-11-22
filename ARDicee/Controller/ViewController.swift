@@ -85,20 +85,30 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let result = sceneView.raycastQuery(from: touchLocation, allowing: .existingPlaneInfinite, alignment: .horizontal)
             
             if let hitLoc = result {
-                let diceScene = SCNScene(named: "art.scnassets/dice.scn")
-                
-                if let diceNode = diceScene?.rootNode.childNode(withName: "Dice", recursively: true) {
-                    diceNode.position = SCNVector3(hitLoc.direction.x,hitLoc.direction.y,hitLoc.direction.z)
-                    
-                    sceneView.scene.rootNode.addChildNode(diceNode)
-                }
-                
+                addDiceNode(hitLoc.direction.x,hitLoc.direction.y,hitLoc.direction.z)
             }
         }
     }
     
-    private func createNewScene() {
-        // Create a new scene
+    
+    func addDiceNode(_ x:Float,_ y:Float,_ z:Float){
+        let diceScene = SCNScene(named: "art.scnassets/dice.scn")
         
+        if let diceNode = diceScene?.rootNode.childNode(withName: "Dice", recursively: true) {
+            diceNode.position = SCNVector3(x,y,z)
+            
+            sceneView.scene.rootNode.addChildNode(diceNode)
+            
+            rotateDiceAnimation(diceNode: diceNode)
+        }
+    }
+    
+    func rotateDiceAnimation(diceNode: SCNNode) {
+        let rotateX = Float(arc4random_uniform(4)+1) * (Float.pi/2)
+        let rotateZ = Float(arc4random_uniform(4)+1) * (Float.pi/2)
+        
+        let action = SCNAction.rotateBy(x: CGFloat(rotateX), y: 0, z: CGFloat(rotateZ), duration: 0.5)
+        
+        diceNode.runAction(action)
     }
 }
