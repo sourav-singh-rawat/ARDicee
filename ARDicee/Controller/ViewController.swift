@@ -113,7 +113,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     @IBAction func rollAgain(_ sender: UIBarButtonItem) {
-        
         rollAll()
     }
     
@@ -121,4 +120,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         rollAll()
     }
     
+    @IBAction func onTrashPressed(_ sender: UIBarButtonItem) {
+        if !diceNodes.isEmpty {
+            for dice in diceNodes {
+                dice.removeFromParentNode()
+            }
+        }
+    }
 }
