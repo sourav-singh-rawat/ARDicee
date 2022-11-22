@@ -15,6 +15,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     var diceNodes = [SCNNode]()
     
+    //MARK: - Life Cycle Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -45,27 +47,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
     
+    //MARK: - ARSCNViewDelegate Methods
+    
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        if anchor is ARPlaneAnchor {
-            let planAnchor = anchor as! ARPlaneAnchor
-            
-            let planNode = SCNNode()
-            planNode.position = SCNVector3(planAnchor.center.x, 0, planAnchor.center.z)
-            planNode.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
-            
-            let plan = SCNPlane(width: CGFloat(planAnchor.planeExtent.width), height: CGFloat(planAnchor.planeExtent.height))
-            
-            let gridMaterial = SCNMaterial()
-            gridMaterial.diffuse.contents = UIImage(named: "art.scnassets/grid.png")
-            
-            plan.materials = [gridMaterial]
-            
-            planNode.geometry = plan
         
-            node.addChildNode(planNode)
-        } else {
-            return
-        }
+        guard let planAnchor = anchor as? ARPlaneAnchor else {return}
+        
+        let planNode = createPlan(withPlanAnchor: planAnchor)
+        
+        node.addChildNode(planNode)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -80,6 +70,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
+    //MARK: - Plan Methods
+    
+    func createPlan(withPlanAnchor planAnchor:ARPlaneAnchor) -> SCNNode {
+        let planNode = SCNNode()
+        planNode.position = SCNVector3(planAnchor.center.x, 0, planAnchor.center.z)
+        planNode.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
+        
+        let plan = SCNPlane(width: CGFloat(planAnchor.planeExtent.width), height: CGFloat(planAnchor.planeExtent.height))
+        
+        let gridMaterial = SCNMaterial()
+        gridMaterial.diffuse.contents = UIImage(named: "art.scnassets/grid.png")
+        
+        plan.materials = [gridMaterial]
+        
+        planNode.geometry = plan
+        
+        return planNode
+    }
+    
+    //MARK: - Dice Methods
     
     func addDiceNode(_ x:Float,_ y:Float,_ z:Float){
         let diceScene = SCNScene(named: "art.scnassets/dice.scn")
