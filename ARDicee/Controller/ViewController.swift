@@ -13,6 +13,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
+    var diceNodes = [SCNNode]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -61,18 +63,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             planNode.geometry = plan
         
             node.addChildNode(planNode)
-            
-//            let diceScene = SCNScene(named: "art.scnassets/dice.scn")!
-//
-//            if let diceNode = diceScene.rootNode.childNode(withName: "Dice", recursively: true) {
-//
-//                diceNode.position = SCNVector3(0, 0, -0.5)
-//
-//                // Set the scene to the view
-//                planNode.addChildNode(diceNode)
-//
-//                node.addChildNode(planNode)
-//            }
         } else {
             return
         }
@@ -99,16 +89,36 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             sceneView.scene.rootNode.addChildNode(diceNode)
             
-            rotateDiceAnimation(diceNode: diceNode)
+            rotateDiceAnimation(dice: diceNode)
+            
+            diceNodes.append(diceNode)
         }
     }
     
-    func rotateDiceAnimation(diceNode: SCNNode) {
+    func rotateDiceAnimation(dice: SCNNode) {
         let rotateX = Float(arc4random_uniform(4)+1) * (Float.pi/2)
         let rotateZ = Float(arc4random_uniform(4)+1) * (Float.pi/2)
         
         let action = SCNAction.rotateBy(x: CGFloat(rotateX * 5), y: 0, z: CGFloat(rotateZ * 5), duration: 0.5)
         
-        diceNode.runAction(action)
+        dice.runAction(action)
     }
+    
+    func rollAll() {
+        if !diceNodes.isEmpty {
+            for dice in diceNodes {
+                rotateDiceAnimation(dice: dice)
+            }
+        }
+    }
+    
+    @IBAction func rollAgain(_ sender: UIBarButtonItem) {
+        
+        rollAll()
+    }
+    
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        rollAll()
+    }
+    
 }
